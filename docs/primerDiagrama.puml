@@ -1,0 +1,83 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+interface ContenidoRerproducible {
+    +reproducir(): void
+    +pausar(): void
+    +obtenerDuracion(): int
+    +obtenerTitulo(): String
+    +obtenerGenero(): String
+    +esFavorito(): boolean
+}
+
+interface ContenidoDescargable{
+    +descargar(): double
+    +verificarEspacioRequerido(): boolean
+}
+
+abstract class ContenidoMultimedia{
+    -titulo: String
+    -genero: String
+    -duracion: int
+    -vecesReproducido: int
+    -esFavorito: boolean
+
+    +reproducir(): void
+    +pausar(): void
+    +obtenerDuracion(): int
+    +obtenerTitulo(): String
+    +obtenerGenero(): String
+    +esFavorito(): boolean
+    #registrarInteraccion(): void
+    {abstract} +calcularPuntuacion(): double
+}
+
+class Pelicula{
+    -director: String
+}
+
+class Serie{
+    -temporadas: int
+    -episodiosPorTemporada:  int
+}
+
+class AudioLibro{
+    -narrador: String
+    -tamanoMB: double
+}
+
+class Usuario{
+    -nombre:  String
+    -espacioDisponible: double
+
+    +agregarFavorito(ContenidoReproducible): void
+    +descargarContenido(ContenidoDescargable): void
+    +reproducirContenido(ContenidoReproducible): void
+}
+
+class PlataformaStreaming{
+    -nombre: String
+
+    +agregarContenido(ContenidoReproducible): void
+    +agregarUsuario(Usuario): void
+    +obtenerContenidoMasPopular(): ContenidoMultimedia
+    +buscarPorGenero(String genero): List<(ContenidoReproducible)>
+    +generarReporte(): void
+}
+
+enum Resolucion{
+    _4k
+    HD
+}
+
+     ContenidoRerproducible <|.. ContenidoMultimedia
+     ContenidoMultimedia  <|-- Pelicula
+     ContenidoDescargable <|.. Pelicula
+     ContenidoMultimedia  <|-- Serie
+     ContenidoMultimedia  <|-- AudioLibro
+     ContenidoDescargable <|.. AudioLibro
+     Usuario  -- "0..*" ContenidoReproducible: -listaFavoritos
+     PlataformaStreaming  o-- "1..*" Usuario: -listaUsuarios
+     PlataformaStreaming  o-- "1..*" ContenidoMultimedia: -listaContenido
+     Pelicula -- "1" Resolucion: -resolucion
+@enduml
